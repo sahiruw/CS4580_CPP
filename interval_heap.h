@@ -20,6 +20,7 @@ class IntervalHeap {
         int seeMin();
         int seeMax();
         void print();
+        bool isFree();
 
     private:
         int capacity;

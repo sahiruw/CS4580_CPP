@@ -1,60 +1,45 @@
-#include <iostream> 
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <sstream>
+
 using namespace std; 	
 
-#include "file_operations.h"
 #include "interval_heap.h"
+#include "InputFileHandler.h"
+#include "file_operations.h"
+#include "OutputBuffer.h"
 
-void external_sort(string input_file) {
+
+int main() {
+    string filename = "data1.txt";
+    size_t bufferSize = 1024*1024*3; 
+
+    try {
+        InputFileHandler fileReader(filename, bufferSize);
+		IntervalHeap intervalHeap(16);
 		
-}
+		OutputBuffer smallBuffer("small.txt", 3);
+		OutputBuffer largeBuffer("large.txt", 3);
 
-int main() 
-{ 
-	generate_file("data1.txt");
+        while (fileReader.hasMoreData()) {
+            vector<int> part = fileReader.readNextPart();
+            cout << "Read " << part.size() << " numbers " << sizeof(part)/1024/1024 << endl;
 
-	IntervalHeap interval_heap(7); // 7 MB
+            for (int number : part) {
+				if (intervalHeap.isFree()) {
+					intervalHeap.insert(number);
+				} else {
+					cout << "Heap is full" << endl;
+				}
+            }
+        }
 
-	interval_heap.insert(3);
-	interval_heap.print();
-	interval_heap.insert(2);
-	interval_heap.print();
-	interval_heap.insert(15);
-	interval_heap.print();
-	interval_heap.insert(5);
-	interval_heap.print();
-	interval_heap.insert(4);
-	interval_heap.print();
-	interval_heap.insert(45);
-	interval_heap.print();
-	interval_heap.insert(7);
-	interval_heap.print();
-	interval_heap.insert(6);
-	interval_heap.print();
-	interval_heap.insert(116);
-	interval_heap.print();
+    } catch (const exception& e) {
+        cerr << e.what() << endl;
+        return 1;
+    }
 
-	cout << "Removing min: " << interval_heap.extractMin() << endl;
-	interval_heap.print();
-	cout << "Removing min: " << interval_heap.extractMin() << endl;
-	interval_heap.print();
-	cout << "Removing min: " << interval_heap.extractMin() << endl;
-	interval_heap.print();
-	cout << "Removing min: " << interval_heap.extractMin() << endl;
-	interval_heap.print();
-	cout << "Removing min: " << interval_heap.extractMin() << endl;
-	interval_heap.print();
-	cout << "Removing min: " << interval_heap.extractMin() << endl;
-	interval_heap.print();
-	cout << "Removing min: " << interval_heap.extractMin() << endl;
-	interval_heap.print();
-	cout << "Removing min: " << interval_heap.extractMin() << endl;
-	interval_heap.print();
-	cout << "Removing min: " << interval_heap.extractMin() << endl;
-	interval_heap.print();
-
-
-	
-
-	// cout << sizeof(Node) << endl;
-	return 0; 
+    return 0;
 }

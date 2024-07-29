@@ -158,3 +158,7 @@ int IntervalHeap::getLeftChild(int index) {
 int IntervalHeap::getRightChild(int index) {
     return 2 * index + 2;
 }
+
+bool IntervalHeap::isFree() {
+    return size < capacity;
+}
