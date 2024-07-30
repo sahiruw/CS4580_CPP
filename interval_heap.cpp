@@ -14,9 +14,8 @@ IntervalHeap::~IntervalHeap() {
 }
 
 void IntervalHeap::insert(int value) {
-    if (size == capacity) {
-        return;
-    }
+
+    cout << "Inserting " << value << " size is " << size << " capacity is " << capacity << endl;
 
     if (heap[size].low == -1 && heap[size].high == -1) {
         if (heap[0].high < value) {
@@ -40,10 +39,11 @@ void IntervalHeap::insert(int value) {
         }
 
         heapifyUp(size);
-        size++;
+        if (size < capacity) {
+            size++;
+        }
+        // cout << "Size is " << size << " capacity is " << capacity << endl;
     }
-    
-
 }
 
 int IntervalHeap::seeMin() {
@@ -55,7 +55,25 @@ int IntervalHeap::seeMax() {
 }
 
 int IntervalHeap::extractMin() {
+    if (size >= capacity) {
+        size = capacity-1;
+    }
+
     int min = heap[0].low;
+
+    if (size < 0){
+        throw out_of_range("Heap is empty");
+    }
+
+    if (size == 0) {
+        if (min == -1) {
+            min = heap[0].high;
+        }
+    }
+    
+    if (min == -1) {
+        throw out_of_range("Min is null");
+    }
 
     // bring the last element to the root
     if (heap[size].low != -1) {
@@ -79,7 +97,26 @@ int IntervalHeap::extractMin() {
 }
 
 int IntervalHeap::extractMax() {
-    int min = heap[0].high;
+    if (size >= capacity) {
+        size = capacity-1;
+    }
+
+
+    int max = heap[0].high;
+
+    if (size < 0){
+        throw out_of_range("Heap is empty");
+    }
+
+    if (size == 0) {
+        if (max == -1) {
+            max = heap[0].low;
+        }
+    }
+    
+    if (max == -1) {
+        throw out_of_range("Max is null");
+    }
 
     // bring the last element to the root
     if (heap[size].high != -1) {
@@ -96,9 +133,9 @@ int IntervalHeap::extractMax() {
     }
     
 
-    heapifyDownMin(0);
+    heapifyDownMax(0);
 
-    return min;
+    return max;
 }
 
 void IntervalHeap::heapifyUp(int index) {
@@ -159,7 +196,7 @@ void IntervalHeap::heapifyDownMax(int index) {
     int nextIndex = rightChildIndex;
 
     if (leftChildIndex <= size && rightChildIndex <= size) {
-        if (heap[leftChildIndex].low < heap[rightChildIndex].low) {
+        if (heap[leftChildIndex].high > heap[rightChildIndex].high) {
             nextIndex = leftChildIndex;
         } 
     } else if (leftChildIndex <= size) {
@@ -194,10 +231,10 @@ void IntervalHeap::swapifNeeded(int childIndex, int parentIndex) {
 }
 
 void IntervalHeap::print() {
-    for (int i = 0; i < size+1; i++) {
-        cout << "[" << heap[i].low << ", " << heap[i].high << "] ";
+    for (int i = 0; i < capacity+1; i++) {
+        // cout << "[" << heap[i].low << ", " << heap[i].high << "] ";
     }
-    cout << endl;
+    // cout << endl;
 }
 
 int IntervalHeap::getParent(int index) {
