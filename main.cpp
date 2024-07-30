@@ -52,57 +52,86 @@ void external_sort(string filename, int startindex, InputFileHandler &fileReader
 }
 
 
-int main() {
-	generate_file("data2.txt");
-	cout << "File Genrated" << endl;
-    string filename = "data2.txt";
-
-
-	size_t bufferSize = 1024*1024*7*3; 
-	InputFileHandler fileReader(filename, bufferSize);
-	IntervalHeap intervalHeap(7);
-
-	OutputBuffer smallBuffer("small.txt", 3);
-	OutputBuffer largeBuffer("large.txt", 3);
-    
-	external_sort(filename, 0, fileReader, intervalHeap, smallBuffer, largeBuffer);
-
-	cout << "End of main" << endl;
-    return 0;
-}
-
-
-
 // int main() {
+// 	generate_file("data2.txt");
+// 	cout << "File Genrated" << endl;
+//     string filename = "data2.txt";
+
+
+// 	size_t bufferSize = 1024*1024*7*3; 
+// 	InputFileHandler fileReader(filename, bufferSize);
 // 	IntervalHeap intervalHeap(7);
 
-// 	intervalHeap.insert(3);
-// 	intervalHeap.insert(2);
-// 	intervalHeap.insert(15);
-// 	intervalHeap.insert(5);
-// 	intervalHeap.insert(4);
-// 	intervalHeap.insert(45);
-// 	intervalHeap.insert(10);
+// 	OutputBuffer smallBuffer("small.txt", 3);
+// 	OutputBuffer largeBuffer("large.txt", 3);
+    
+// 	external_sort(filename, 0, fileReader, intervalHeap, smallBuffer, largeBuffer);
 
-// 	intervalHeap.print();
-
-// 	cout << "The Min val is " << intervalHeap.extractMin() << endl;
-// 	intervalHeap.print();
-// 	cout << "The Min val is " << intervalHeap.extractMin() << endl;
-// 	intervalHeap.print();
-// 	cout << "The Min val is " << intervalHeap.extractMin() << endl;
-// 	intervalHeap.print();
-// 	cout << "The Min val is " << intervalHeap.extractMin() << endl;
-// 	intervalHeap.print();
-// 	cout << "The Min val is " << intervalHeap.extractMin() << endl;
-// 	intervalHeap.print();
-// 	cout << "The Min val is " << intervalHeap.extractMin() << endl;
-// 	intervalHeap.print();
-// 	cout << "The Min val is " << intervalHeap.extractMin() << endl;
-// 	intervalHeap.print();
-// 	cout << "The Min val is " << intervalHeap.extractMin() << endl;
-// 	intervalHeap.print();
-// 	cout << "The Min val is " << intervalHeap.extractMin() << endl;
-// 	intervalHeap.print();
-
+// 	cout << "End of main" << endl;
+//     return 0;
 // }
+
+
+
+int main() {
+	IntervalHeap intervalHeap(7);
+
+	intervalHeap.insert(3);
+	intervalHeap.insert(2);
+	intervalHeap.insert(15);
+	intervalHeap.insert(5);
+	intervalHeap.insert(4);
+	intervalHeap.insert(45);
+	intervalHeap.insert(10);
+
+	intervalHeap.print();
+
+	// cout << "The Min val is " << intervalHeap.extractMin() << endl;
+	// intervalHeap.print();
+	// cout << "The Min val is " << intervalHeap.extractMin() << endl;
+	// intervalHeap.print();
+	// cout << "The Min val is " << intervalHeap.extractMin() << endl;
+	// intervalHeap.print();
+	// cout << "The Min val is " << intervalHeap.extractMin() << endl;
+	// intervalHeap.print();
+	// cout << "The Min val is " << intervalHeap.extractMin() << endl;
+	// intervalHeap.print();
+	// cout << "The Min val is " << intervalHeap.extractMin() << endl;
+	// intervalHeap.print();
+	// cout << "The Min val is " << intervalHeap.extractMin() << endl;
+	// intervalHeap.print();
+	// cout << "The Min val is " << intervalHeap.extractMin() << endl;
+	// intervalHeap.print();
+	// cout << "The Min val is " << intervalHeap.extractMin() << endl;
+	// intervalHeap.print();
+
+	cout << "The Max val is " << intervalHeap.extractMax() << endl;
+	intervalHeap.print();
+	cout << "The Max val is " << intervalHeap.extractMax() << endl;
+	intervalHeap.print();
+	cout << "The Max val is " << intervalHeap.extractMax() << endl;
+	intervalHeap.print();
+	cout << "The Max val is " << intervalHeap.extractMax() << endl;
+	intervalHeap.print();
+	cout << "The Max val is " << intervalHeap.extractMax() << endl;
+	intervalHeap.print();
+	cout << "The Max val is " << intervalHeap.extractMax() << endl;
+	intervalHeap.print();
+	cout << "The Max val is " << intervalHeap.extractMax() << endl;
+	intervalHeap.print();
+	cout << "The Max val is " << intervalHeap.extractMax() << endl;
+	intervalHeap.print();
+	cout << "The Max val is " << intervalHeap.extractMax() << endl;
+	intervalHeap.print();
+	cout << "The Max val is " << intervalHeap.extractMax() << endl;
+	intervalHeap.print();
+	cout << "The Max val is " << intervalHeap.extractMax() << endl;
+	intervalHeap.print();
+	cout << "The Max val is " << intervalHeap.extractMax() << endl;
+	intervalHeap.print();
+	cout << "The Max val is " << intervalHeap.extractMax() << endl;
+	intervalHeap.print();
+	cout << "The Max val is " << intervalHeap.extractMax() << endl;
+	intervalHeap.print();
+
+}

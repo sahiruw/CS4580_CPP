@@ -17,6 +17,7 @@ class IntervalHeap {
         ~IntervalHeap();
         void insert(int value);
         int extractMin();
+        int extractMax();
         int seeMin();
         int seeMax();
         void print();
@@ -28,7 +29,8 @@ class IntervalHeap {
         int size;
         Node* heap;
         void heapifyUp(int index);
-        void heapifyDown(int index);
+        void heapifyDownMin(int index);
+        void heapifyDownMax(int index);
         int getParent(int index);
         int getLeftChild(int index);
         int getRightChild(int index);

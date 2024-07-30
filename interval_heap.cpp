@@ -73,7 +73,30 @@ int IntervalHeap::extractMin() {
     }
     
 
-    heapifyDown(0);
+    heapifyDownMin(0);
+
+    return min;
+}
+
+int IntervalHeap::extractMax() {
+    int min = heap[0].high;
+
+    // bring the last element to the root
+    if (heap[size].high != -1) {
+        heap[0].high = heap[size].high;
+        heap[size].high = -1;
+    } else {
+        heap[0].high = heap[size].low;
+        heap[size].low = -1;
+    }
+
+    // delete the last element if null
+    if (heap[size].low == -1 && heap[size].high == -1) {
+        size--;
+    }
+    
+
+    heapifyDownMin(0);
 
     return min;
 }
@@ -103,7 +126,29 @@ void IntervalHeap::heapifyUp(int index) {
     heapifyUp(parentIndex);
 }
 
-void IntervalHeap::heapifyDown(int index) {
+void IntervalHeap::heapifyDownMin(int index) {
+    if (index >= size) {
+        return;
+    }
+
+    int leftChildIndex = getLeftChild(index);
+    int rightChildIndex = getRightChild(index);
+
+    int nextIndex = rightChildIndex;
+
+    if (leftChildIndex <= size && rightChildIndex <= size) {
+        if (heap[leftChildIndex].low < heap[rightChildIndex].low) {
+            nextIndex = leftChildIndex;
+        } 
+    } else if (leftChildIndex <= size) {
+        nextIndex = leftChildIndex;
+    }
+
+    swapifNeeded(nextIndex, index);
+    
+}
+
+void IntervalHeap::heapifyDownMax(int index) {
     if (index >= size) {
         return;
     }
@@ -144,7 +189,7 @@ void IntervalHeap::swapifNeeded(int childIndex, int parentIndex) {
             swap(heap[parentIndex].low, heap[parentIndex].high);
         }
 
-        heapifyDown(childIndex);
+        heapifyDownMin(childIndex);
     }
 }
 
