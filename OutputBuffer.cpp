@@ -33,7 +33,15 @@ void OutputBuffer::flushToDisk() {
     if (!buffer.empty()) {
         saveToDisk();
     }
+
+    try {
+        // close file
+        file.close();
+    } catch (const std::exception &e) {
+        std::cerr << "Error closing file: " << e.what() << std::endl;
+    }
 }
+
 
 void OutputBuffer::saveToDisk() {
     std::cout << "Saving buffer to disk" << std::endl;

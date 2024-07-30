@@ -1,5 +1,6 @@
 #ifndef INTERVAL_HEAP_H
 #define INTERVAL_HEAP_H
+#include <string>
 
 struct Node {
     int low;
@@ -15,6 +16,7 @@ class IntervalHeap {
     public:
         IntervalHeap(int capacity);
         ~IntervalHeap();
+        
         void insert(int value);
         int extractMin();
         int extractMax();
@@ -23,6 +25,8 @@ class IntervalHeap {
         void print();
         bool isFree();
         int getSize();
+        void saveToFile(const std::string& filename) ;
+        
 
     private:
         int capacity;

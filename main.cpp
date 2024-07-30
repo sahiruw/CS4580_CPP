@@ -13,54 +13,50 @@ using namespace std;
 
 
 void external_sort(string filename, int startindex, InputFileHandler &fileReader, IntervalHeap &intervalHeap, OutputBuffer &smallBuffer, OutputBuffer &largeBuffer) {
-	int idx = 0;
+	cout << "External Sort called for " << filename << endl; 
+
+	fileReader.openFile(filename);
+	if (!fileReader.hasMoreData()) {
+        return;
+    }
+	
 	bool intervalTreeFull = false;
 	int minOrMaxFlag = false;
 
 	while (fileReader.hasMoreData()) {
 		vector<int> part = fileReader.readNextPart();
-		// cout << "Read 	" << part.size() << " numbers " << intervalHeap.getSize() << "hehe" << endl;
+		cout << "Read 	" << part.size() << " numbers " << intervalHeap.getSize() << "hehe" << endl;
 
 		for (int number : part) {
-			// cout << "The  number is " << number << endl;
 			if (!intervalTreeFull && intervalHeap.isFree() ) {
-				// cout << "Inserting to initializing heap " << number << endl;
 				intervalHeap.insert(number);
 			} 
 			else {
 				intervalTreeFull = true;
 				
 				if (number > intervalHeap.seeMax()) {
-					// cout << "Adding to large buffer " << number << endl;
 					largeBuffer.addData(number);
 				}
 				else if (number < intervalHeap.seeMin()) {
-					// cout << "Adding to small buffer " << number << endl;
 					smallBuffer.addData(number);
 				}
 				else {
-					// if (minOrMaxFlag == true){
-					// 	// cout << "Extracting min " << intervalHeap.seeMin() << endl;
-					// 	int min = intervalHeap.extractMin();
-					// 	smallBuffer.addData(min);
-					// 	intervalHeap.print();
-					// 	intervalHeap.insert(number);
-					// }
-					// else {
-					// 	// cout << "Extracting max " << intervalHeap.seeMax() << endl;
-					// 	int max = intervalHeap.extractMax();
-					// 	largeBuffer.addData(max);
-					// 	intervalHeap.print();
-					// 	intervalHeap.insert(number);
-					// }
-					// // cout << "Inserting " << number << endl;
+					if (minOrMaxFlag == true){
+						int min = intervalHeap.extractMin();
+						smallBuffer.addData(min);
+						intervalHeap.insert(number);
+					}
+					else {
+						int max = intervalHeap.extractMax();
+						largeBuffer.addData(max);
+						intervalHeap.insert(number);
+					}
 					
-					// minOrMaxFlag = !minOrMaxFlag;
+					minOrMaxFlag = !minOrMaxFlag;
 				}
 			}
 
-			
-			intervalHeap.print();
+
 		}
 
 		
@@ -70,6 +66,11 @@ void external_sort(string filename, int startindex, InputFileHandler &fileReader
 
 	smallBuffer.flushToDisk();
 	largeBuffer.flushToDisk();
+
+	intervalHeap.saveToFile("sorted" + to_string(startindex) + ".txt");
+
+	// external_sort("small.txt", startindex + 1, fileReader, intervalHeap, smallBuffer, largeBuffer);
+	// external_sort("large.txt", startindex + 2, fileReader, intervalHeap, smallBuffer, largeBuffer);
 
 }
 
@@ -81,14 +82,15 @@ void run() {
     string filename = "data2.txt";
 
 
-	size_t bufferSize = 1024*1024*7*3; 
-	InputFileHandler fileReader(filename, bufferSize);
+	size_t bufferSize = 1024*1024*3; 
+	InputFileHandler fileReader(bufferSize);
 	IntervalHeap intervalHeap(8);
 
 	OutputBuffer smallBuffer("small.txt", 3);
 	OutputBuffer largeBuffer("large.txt", 3);
     
 	external_sort(filename, 0, fileReader, intervalHeap, smallBuffer, largeBuffer);
+	external_sort("small.txt", 0, fileReader, intervalHeap, smallBuffer, largeBuffer);
 
 	// cout << "End of main" << endl;
 }

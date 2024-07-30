@@ -1,5 +1,10 @@
 #include "interval_heap.h"
 #include <iostream>
+#include <fstream>
+#include <random>
+#include <string>
+#include <filesystem> // Add this line
+
 using namespace std;
 
 
@@ -15,7 +20,7 @@ IntervalHeap::~IntervalHeap() {
 
 void IntervalHeap::insert(int value) {
 
-    cout << "Inserting " << value << " size is " << size << " capacity is " << capacity << endl;
+    // cout << "Inserting " << value << " size is " << size << " capacity is " << capacity << endl;
 
     if (heap[size].low == -1 && heap[size].high == -1) {
         if (heap[0].high < value) {
@@ -255,4 +260,15 @@ bool IntervalHeap::isFree() {
 
 int IntervalHeap::getSize() {
     return size;
+}
+
+void IntervalHeap::saveToFile(const std::string& filename) {
+    cout << "Saving to file " << filename << endl;
+    ofstream file(filename, ios::out);
+
+    for (int i = 0; i < size; i++) {
+        file << extractMin() << endl;
+    }
+
+    file.close();
 }

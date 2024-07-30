@@ -1,14 +1,19 @@
 #include "InputFileHandler.h"
+#include <iostream>
 
-InputFileHandler::InputFileHandler(const std::string& filename, std::size_t bufferSize) {
-    this->filename = filename;
+InputFileHandler::InputFileHandler(std::size_t bufferSize) {
     this->bufferSize = bufferSize;
-    this->file.open(filename, std::ios::binary);
     this->currentPosition = 0;
 
-    if (!this->file) {
-        throw std::runtime_error("Unable to open file");
-    }
+}
+
+void InputFileHandler::openFile(const std::string& filename) {
+    std::cout << "Opening file " << filename << std::endl;
+    this->filename = filename;
+    this->file.open(filename, std::ios::binary);
+    // if (!this->file) {
+    //     throw std::runtime_error("Unable to open file");
+    // }
 }
 
 std::vector<int> InputFileHandler::readNextPart() {

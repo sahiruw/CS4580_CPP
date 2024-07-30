@@ -11,11 +11,13 @@
 
 class InputFileHandler {
 public:
-    InputFileHandler(const std::string& filename, std::size_t bufferSize);
+    InputFileHandler(std::size_t bufferSize);
 
     std::vector<int> readNextPart();
 
     bool hasMoreData();
+    void openFile(const std::string& filename) ;
+    
 private:
     std::string filename;
     std::size_t bufferSize;
