@@ -14,6 +14,7 @@ public:
 
     void addData(int data);
     void flushToDisk();
+    int getBufferSize() { return buffer.size(); }
 
 private:
     std::string filename;

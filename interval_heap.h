@@ -21,6 +21,7 @@ class IntervalHeap {
         int seeMax();
         void print();
         bool isFree();
+        int getSize();
 
     private:
         int capacity;

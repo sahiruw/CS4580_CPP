@@ -111,9 +111,17 @@ void IntervalHeap::heapifyDown(int index) {
     int leftChildIndex = getLeftChild(index);
     int rightChildIndex = getRightChild(index);
 
-    swapifNeeded(leftChildIndex, index);
-    swapifNeeded(rightChildIndex, index);
+    int nextIndex = rightChildIndex;
 
+    if (leftChildIndex <= size && rightChildIndex <= size) {
+        if (heap[leftChildIndex].low < heap[rightChildIndex].low) {
+            nextIndex = leftChildIndex;
+        } 
+    } else if (leftChildIndex <= size) {
+        nextIndex = leftChildIndex;
+    }
+
+    swapifNeeded(nextIndex, index);
     
 }
 
@@ -161,4 +169,8 @@ int IntervalHeap::getRightChild(int index) {
 
 bool IntervalHeap::isFree() {
     return size < capacity;
+}
+
+int IntervalHeap::getSize() {
+    return size;
 }
