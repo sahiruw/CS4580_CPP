@@ -76,8 +76,8 @@ int IntervalHeap::extractMin() {
         }
     }
     
-    if (min == -1) {
-        throw out_of_range("Min is null");
+    if (heap[size].low == -1 && heap[size].high == -1) {
+        size--;
     }
 
     // bring the last element to the root
@@ -119,8 +119,8 @@ int IntervalHeap::extractMax() {
         }
     }
     
-    if (max == -1) {
-        throw out_of_range("Max is null");
+    if (heap[size].low == -1 && heap[size].high == -1) {
+        size--;
     }
 
     // bring the last element to the root
@@ -236,8 +236,8 @@ void IntervalHeap::swapifNeeded(int childIndex, int parentIndex) {
 }
 
 void IntervalHeap::print() {
-    for (int i = 0; i < capacity+1; i++) {
-        // cout << "[" << heap[i].low << ", " << heap[i].high << "] ";
+    for (int i = 0; i < size+1; i++) {
+        cout << "[" << heap[i].low << ", " << heap[i].high << "] ";
     }
     // cout << endl;
 }
@@ -265,9 +265,10 @@ int IntervalHeap::getSize() {
 void IntervalHeap::saveToFile(const std::string& filename) {
     cout << "Saving to file " << filename << endl;
     ofstream file(filename, ios::out);
-
-    for (int i = 0; i < size; i++) {
-        file << extractMin() << endl;
+    int start_size = size;
+    for (int i = 0; i < start_size*2; i++) {
+        int min = extractMin();
+        file << min << endl;
     }
 
     file.close();

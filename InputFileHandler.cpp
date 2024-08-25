@@ -1,6 +1,8 @@
 #include "InputFileHandler.h"
 #include <iostream>
 
+using namespace std; 	
+
 InputFileHandler::InputFileHandler(std::size_t bufferSize) {
     this->bufferSize = bufferSize;
     this->currentPosition = 0;
@@ -8,12 +10,16 @@ InputFileHandler::InputFileHandler(std::size_t bufferSize) {
 }
 
 void InputFileHandler::openFile(const std::string& filename) {
+    this->currentPosition = 0;
+
     std::cout << "Opening file " << filename << std::endl;
     this->filename = filename;
     this->file.open(filename, std::ios::binary);
-    // if (!this->file) {
-    //     throw std::runtime_error("Unable to open file");
-    // }
+
+    cout << file.peek() << endl;
+    if (!this->file) {
+        throw std::runtime_error("Unable to open file");
+    }
 }
 
 std::vector<int> InputFileHandler::readNextPart() {
@@ -40,5 +46,6 @@ std::vector<int> InputFileHandler::readNextPart() {
 }
 
 bool InputFileHandler::hasMoreData() {
+    // cout << "Peek is " << file.peek() << endl;
     return file.peek() != EOF;
 }

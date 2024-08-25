@@ -10,10 +10,10 @@ OutputBuffer::OutputBuffer(const std::string& filename, std::size_t bufferSizeMB
     if (std::filesystem::exists(filename)) {
         std::filesystem::remove(filename);
     }
-    file.open(filename,  std::ios::out);
-    if (!file) {
-        throw std::runtime_error("Unable to open file");
-    }
+    // file.open(filename,  std::ios::out);
+    // if (!file) {
+    //     throw std::runtime_error("Unable to open file");
+    // }
 }
 
 OutputBuffer::~OutputBuffer() {
@@ -36,7 +36,8 @@ void OutputBuffer::flushToDisk() {
 
     try {
         // close file
-        file.close();
+        // file.close();
+        // cout << "File closed " << filename << endl;
     } catch (const std::exception &e) {
         std::cerr << "Error closing file: " << e.what() << std::endl;
     }
@@ -59,5 +60,7 @@ void OutputBuffer::saveToDisk() {
     }
 
     buffer.clear(); // Clear the buffer after writing
+    file.close();
+    cout << "Buffer saved to disk" << endl;
 }
 

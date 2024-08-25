@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <stdexcept>
 
 using namespace std; 	
 
@@ -14,9 +15,10 @@ using namespace std;
 
 void external_sort(string filename, int startindex, InputFileHandler &fileReader, IntervalHeap &intervalHeap, OutputBuffer &smallBuffer, OutputBuffer &largeBuffer) {
 	cout << "External Sort called for " << filename << endl; 
-
+	
 	fileReader.openFile(filename);
 	if (!fileReader.hasMoreData()) {
+		cout << "No more data to read" << endl;
         return;
     }
 	
@@ -67,30 +69,30 @@ void external_sort(string filename, int startindex, InputFileHandler &fileReader
 	smallBuffer.flushToDisk();
 	largeBuffer.flushToDisk();
 
-	intervalHeap.saveToFile("sorted" + to_string(startindex) + ".txt");
+	// intervalHeap.saveToFile("sorted" + to_string(startindex) + ".txt");
 
-	// external_sort("small.txt", startindex + 1, fileReader, intervalHeap, smallBuffer, largeBuffer);
-	// external_sort("large.txt", startindex + 2, fileReader, intervalHeap, smallBuffer, largeBuffer);
+	external_sort("small.txt", startindex + 1, fileReader, intervalHeap, smallBuffer, largeBuffer);
+	external_sort("large.txt", startindex + 2, fileReader, intervalHeap, smallBuffer, largeBuffer);
 
 }
 
 
 
 void run() {
-	// generate_file("data1.txt");
+	generate_file("data3.txt");
 	cout << "File Genrated" << endl;
-    string filename = "data2.txt";
+    string filename = "data3.txt";
 
 
 	size_t bufferSize = 1024*1024*3; 
 	InputFileHandler fileReader(bufferSize);
-	IntervalHeap intervalHeap(8);
+	IntervalHeap intervalHeap(2);
 
-	OutputBuffer smallBuffer("small.txt", 3);
-	OutputBuffer largeBuffer("large.txt", 3);
+	OutputBuffer smallBuffer("small.txt", 1);
+	OutputBuffer largeBuffer("large.txt", 1);
     
 	external_sort(filename, 0, fileReader, intervalHeap, smallBuffer, largeBuffer);
-	external_sort("small.txt", 0, fileReader, intervalHeap, smallBuffer, largeBuffer);
+	// external_sort("small.txt", 0, fileReader, intervalHeap, smallBuffer, largeBuffer);
 
 	// cout << "End of main" << endl;
 }

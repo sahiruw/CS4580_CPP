@@ -10,7 +10,7 @@ using namespace std;
 
 void generate_file(const string &file_name)
 {
-    const int file_size = 256;
+    const int file_size = 16;
     const int no_of_items = file_size * 1024 * 1024 / sizeof(int);
 
     if (filesystem::exists(file_name)) { // Use fs::exists instead of filesystem::exists
