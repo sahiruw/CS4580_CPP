@@ -272,4 +272,7 @@ void IntervalHeap::saveToFile(const std::string& filename) {
     }
 
     file.close();
+
+    this->size = 0;
+    this->heap = new Node[capacity];
 }

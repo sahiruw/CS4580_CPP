@@ -69,10 +69,10 @@ void external_sort(string filename, int startindex, InputFileHandler &fileReader
 	smallBuffer.flushToDisk();
 	largeBuffer.flushToDisk();
 
-	// intervalHeap.saveToFile("sorted" + to_string(startindex) + ".txt");
+	intervalHeap.saveToFile("sorted" + to_string(startindex) + ".txt");
 
-	external_sort("small.txt", startindex + 1, fileReader, intervalHeap, smallBuffer, largeBuffer);
-	external_sort("large.txt", startindex + 2, fileReader, intervalHeap, smallBuffer, largeBuffer);
+	external_sort("small_temp.txt", startindex + 1, fileReader, intervalHeap, smallBuffer, largeBuffer);
+	external_sort("large_temp.txt", startindex + 2, fileReader, intervalHeap, smallBuffer, largeBuffer);
 
 }
 

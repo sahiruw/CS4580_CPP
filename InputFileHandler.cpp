@@ -10,17 +10,23 @@ InputFileHandler::InputFileHandler(std::size_t bufferSize) {
 }
 
 void InputFileHandler::openFile(const std::string& filename) {
+    // Close the current file if it is open
+    if (this->file.is_open()) {
+        this->file.close();
+    }
+
     this->currentPosition = 0;
+    this->filename = filename;
 
     std::cout << "Opening file " << filename << std::endl;
-    this->filename = filename;
     this->file.open(filename, std::ios::binary);
 
-    cout << file.peek() << endl;
     if (!this->file) {
         throw std::runtime_error("Unable to open file");
     }
+
 }
+
 
 std::vector<int> InputFileHandler::readNextPart() {
     file.seekg(currentPosition);

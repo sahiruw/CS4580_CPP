@@ -10,10 +10,10 @@ OutputBuffer::OutputBuffer(const std::string& filename, std::size_t bufferSizeMB
     if (std::filesystem::exists(filename)) {
         std::filesystem::remove(filename);
     }
-    // file.open(filename,  std::ios::out);
-    // if (!file) {
-    //     throw std::runtime_error("Unable to open file");
-    // }
+    file.open(filename,  std::ios::out);
+    if (!file) {
+        throw std::runtime_error("Unable to open file");
+    }
 }
 
 OutputBuffer::~OutputBuffer() {
@@ -30,14 +30,15 @@ void OutputBuffer::addData(int data) {
 }
 
 void OutputBuffer::flushToDisk() {
-    if (!buffer.empty()) {
-        saveToDisk();
-    }
+    // cout << "Flush to disk called" << endl;
+
+    saveToDisk();
+    saveFileCopy();
+    clearOriginalFile();
 
     try {
         // close file
-        // file.close();
-        // cout << "File closed " << filename << endl;
+        file.close();
     } catch (const std::exception &e) {
         std::cerr << "Error closing file: " << e.what() << std::endl;
     }
@@ -59,8 +60,39 @@ void OutputBuffer::saveToDisk() {
         file << value << '\n'; // Write each integer on a new line
     }
 
-    buffer.clear(); // Clear the buffer after writing
-    file.close();
-    cout << "Buffer saved to disk" << endl;
+    buffer.clear(); // Clear the buffer after writing to the file
 }
 
+
+void OutputBuffer::saveFileCopy() {
+    // Find the last dot in the filename to separate the extension
+    std::size_t dotPosition = filename.find_last_of('.');
+
+    std::string backupFilename = filename.substr(0, dotPosition) + "_temp" + filename.substr(dotPosition);
+
+    std::ifstream src(filename, std::ios::binary);
+    std::ofstream dst(backupFilename, std::ios::binary | std::ios::trunc);
+
+    if (!src || !dst) {
+        throw std::runtime_error("Unable to create backup file");
+    }
+
+    dst << src.rdbuf(); // Copy content from the original file to the backup
+
+    std::cout << "Backup saved as " << backupFilename << std::endl;
+}
+
+void OutputBuffer::clearOriginalFile() {
+    // Reopen the original file in truncation mode to clear its contents
+    file.close(); // Close the current file stream
+    file.open(filename, std::ios::trunc); // Open the file with truncation mode
+
+    if (!file) {
+        throw std::runtime_error("Unable to open file in truncation mode");
+    }
+
+    std::cout << "Original file " << filename << " cleared." << std::endl;
+
+    // Close the file after truncation to ensure it is cleared
+    file.close();
+}

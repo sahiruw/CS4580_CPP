@@ -23,6 +23,8 @@ private:
     std::ofstream file;
 
     void saveToDisk();
+    void saveFileCopy();
+    void clearOriginalFile();
 };
 
 #endif // OUTPUTBUFFER_H
