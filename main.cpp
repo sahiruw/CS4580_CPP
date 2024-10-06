@@ -1,9 +1,12 @@
 #include <iostream>
+#include <array>
 #include <fstream>
-#include <vector>
+#include <map>
 #include <string>
 #include <sstream>
 #include <stdexcept>
+#include <set>
+#include <chrono> // Include chrono for timing
 
 using namespace std; 	
 
@@ -11,26 +14,31 @@ using namespace std;
 #include "InputFileHandler.h"
 #include "file_operations.h"
 #include "OutputBuffer.h"
+#include "FileMerger.h"
 
-
-void external_sort(string filename, int startindex, InputFileHandler &fileReader, IntervalHeap &intervalHeap, OutputBuffer &smallBuffer, OutputBuffer &largeBuffer) {
+int external_sort(string filename, int startindex, InputFileHandler &fileReader, IntervalHeap &intervalHeap, map<int, int> &parent_child_rels) {
 	cout << "External Sort called for " << filename << endl; 
-	
+
 	fileReader.openFile(filename);
 	if (!fileReader.hasMoreData()) {
 		cout << "No more data to read" << endl;
-        return;
+        return startindex - 1;
     }
+
+	OutputBuffer smallBuffer("Files/small" + to_string(startindex) + ".txt", 1);
+	OutputBuffer largeBuffer("Files/large" + to_string(startindex) + ".txt", 1);
 	
 	bool intervalTreeFull = false;
 	int minOrMaxFlag = false;
 
+	
+
 	while (fileReader.hasMoreData()) {
 		vector<int> part = fileReader.readNextPart();
-		cout << "Read 	" << part.size() << " numbers " << intervalHeap.getSize() << "hehe" << endl;
+		cout << "Read " << part.size() << " numbers " << intervalHeap.getSize() << endl;
 
 		for (int number : part) {
-			if (!intervalTreeFull && intervalHeap.isFree() ) {
+			if (!intervalTreeFull && intervalHeap.isFree()) {
 				intervalHeap.insert(number);
 			} 
 			else {
@@ -57,11 +65,7 @@ void external_sort(string filename, int startindex, InputFileHandler &fileReader
 					minOrMaxFlag = !minOrMaxFlag;
 				}
 			}
-
-
 		}
-
-		
 	}
 
 	cout << intervalHeap.seeMin() << " " << intervalHeap.seeMax() << endl;
@@ -69,82 +73,53 @@ void external_sort(string filename, int startindex, InputFileHandler &fileReader
 	smallBuffer.flushToDisk();
 	largeBuffer.flushToDisk();
 
-	intervalHeap.saveToFile("sorted" + to_string(startindex) + ".txt");
+	intervalHeap.saveToFile("Files/sorted" + to_string(startindex) + ".txt");
 
-	external_sort("small_temp.txt", startindex + 1, fileReader, intervalHeap, smallBuffer, largeBuffer);
-	external_sort("large_temp.txt", startindex + 2, fileReader, intervalHeap, smallBuffer, largeBuffer);
+	int lastindex = external_sort("Files/small" + to_string(startindex) + ".txt", startindex + 1, fileReader, intervalHeap, parent_child_rels);
+	int lastIndexTemp = lastindex;
+	lastindex = external_sort("Files/large" + to_string(startindex) + ".txt", lastindex + 1, fileReader, intervalHeap, parent_child_rels);
 
+	if (lastindex != startindex) {
+		parent_child_rels[lastIndexTemp + 1] = startindex;
+		parent_child_rels[startindex + 1] = startindex;
+	}
+
+
+
+	return lastindex;
 }
 
+
+void actual_external_sort(string filename) {
+
+	size_t bufferSize = 1024 * 1024 * 3; 
+	InputFileHandler fileReader(bufferSize);
+	IntervalHeap intervalHeap(2);
+	
+	map<int, int> parent_child_rels;
+
+	external_sort(filename, 0, fileReader, intervalHeap, parent_child_rels);
+
+	FileMerger fileMerger(parent_child_rels);
+    fileMerger.mergeFiles("merged_output.txt");
+}
 
 
 void run() {
 	generate_file("data3.txt");
-	cout << "File Genrated" << endl;
+	cout << "File Generated" << endl;
     string filename = "data3.txt";
 
+	auto start = chrono::high_resolution_clock::now(); // Start timing
+	actual_external_sort(filename);
 
-	size_t bufferSize = 1024*1024*3; 
-	InputFileHandler fileReader(bufferSize);
-	IntervalHeap intervalHeap(2);
-
-	OutputBuffer smallBuffer("small.txt", 1);
-	OutputBuffer largeBuffer("large.txt", 1);
-    
-	external_sort(filename, 0, fileReader, intervalHeap, smallBuffer, largeBuffer);
-	// external_sort("small.txt", 0, fileReader, intervalHeap, smallBuffer, largeBuffer);
-
-	// cout << "End of main" << endl;
+	auto end = chrono::high_resolution_clock::now(); // End timing
+	chrono::duration<double> duration = end - start; // Calculate duration
+	cout << "Sorting completed in " << duration.count() << " seconds." << endl; // Log duration
 }
 
 
-
-void test() {
-	IntervalHeap intervalHeap(7);
-
-	intervalHeap.insert(3);
-	intervalHeap.insert(2);
-	intervalHeap.insert(15);
-	intervalHeap.insert(5);
-	intervalHeap.insert(4);
-	intervalHeap.insert(45);
-	intervalHeap.insert(10);
-
-	intervalHeap.print();
-
-	// cout << "The Min val is " << intervalHeap.extractMin() << endl;
-	intervalHeap.print();
-	// cout << "The Min val is " << intervalHeap.extractMin() << endl;
-	intervalHeap.print();
-	// cout << "The Min val is " << intervalHeap.extractMin() << endl;
-	intervalHeap.print();
-
-
-
-	// cout << "The Max val is " << intervalHeap.extractMax() << endl;
-	intervalHeap.print();
-	// cout << "The Max val is " << intervalHeap.extractMax() << endl;
-	intervalHeap.print();
-	// cout << "The Max val is " << intervalHeap.extractMax() << endl;
-	intervalHeap.print();
-	// cout << "The Max val is " << intervalHeap.extractMax() << endl;
-	intervalHeap.print();
-	// // cout << "The Max val is " << intervalHeap.extractMax() << endl;
-	// intervalHeap.print();
-	// // cout << "The Max val is " << intervalHeap.extractMax() << endl;
-	// intervalHeap.print();
-	// // cout << "The Max val is " << intervalHeap.extractMax() << endl;
-	// intervalHeap.print();
-	// // cout << "The Max val is " << intervalHeap.extractMax() << endl;
-	// intervalHeap.print();
-	// cout << "The Max val is " << intervalHeap.extractMax() << endl;
-	intervalHeap.print();
-
-}
-
-
-int main () {
-	// test();
+int main() {
 	run();
 	return 0;
 }

@@ -264,15 +264,24 @@ int IntervalHeap::getSize() {
 
 void IntervalHeap::saveToFile(const std::string& filename) {
     cout << "Saving to file " << filename << endl;
-    ofstream file(filename, ios::out);
+    
+    // Use a string stream to accumulate the output
+    std::ostringstream oss;
+    
+    // Extract all elements and accumulate them in the string stream
     int start_size = size;
-    for (int i = 0; i < start_size*2; i++) {
+    for (int i = 0; i < start_size * 2; i++) {
         int min = extractMin();
-        file << min << endl;
+        oss << min << '\n';
     }
 
+    // Write the entire content of the string stream to the file in one go
+    std::ofstream file(filename, std::ios::out);
+    file << oss.str();
     file.close();
 
+    // Reinitialize the heap (if necessary)
     this->size = 0;
+    delete[] this->heap;
     this->heap = new Node[capacity];
 }

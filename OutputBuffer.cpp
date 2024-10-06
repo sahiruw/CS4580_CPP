@@ -18,7 +18,7 @@ OutputBuffer::OutputBuffer(const std::string& filename, std::size_t bufferSizeMB
 
 OutputBuffer::~OutputBuffer() {
     cout << "Destructor called. Saving to " << filename << endl;
-    flushToDisk();
+    // flushToDisk();
     file.close();
 }
 
@@ -33,8 +33,6 @@ void OutputBuffer::flushToDisk() {
     // cout << "Flush to disk called" << endl;
 
     saveToDisk();
-    saveFileCopy();
-    clearOriginalFile();
 
     try {
         // close file
@@ -47,52 +45,30 @@ void OutputBuffer::flushToDisk() {
 
 void OutputBuffer::saveToDisk() {
     std::cout << "Saving buffer to disk" << std::endl;
-    // Use the existing file stream in append mode
-    file.close(); // Close the existing file stream
-    file.open(filename, std::ios::app); // Reopen the file in append mode
 
+    // Close the existing file stream if open
+    file.close();
+
+    // Reopen the file in append mode
+    file.open(filename, std::ios::app);
     if (!file) {
         throw std::runtime_error("Unable to open file in append mode");
     }
 
-    // Write each integer from the buffer to the file in a readable format
+    // Use a string stream to accumulate the output
+    std::ostringstream oss;
+
+    // Write each integer from the buffer to the string stream
     for (int value : buffer) {
-        file << value << '\n'; // Write each integer on a new line
+        oss << value << '\n';
     }
 
-    buffer.clear(); // Clear the buffer after writing to the file
-}
+    // Write the entire content of the string stream to the file in one go
+    file << oss.str();
 
+    // Clear the buffer after writing to the file
+    buffer.clear();
 
-void OutputBuffer::saveFileCopy() {
-    // Find the last dot in the filename to separate the extension
-    std::size_t dotPosition = filename.find_last_of('.');
-
-    std::string backupFilename = filename.substr(0, dotPosition) + "_temp" + filename.substr(dotPosition);
-
-    std::ifstream src(filename, std::ios::binary);
-    std::ofstream dst(backupFilename, std::ios::binary | std::ios::trunc);
-
-    if (!src || !dst) {
-        throw std::runtime_error("Unable to create backup file");
-    }
-
-    dst << src.rdbuf(); // Copy content from the original file to the backup
-
-    std::cout << "Backup saved as " << backupFilename << std::endl;
-}
-
-void OutputBuffer::clearOriginalFile() {
-    // Reopen the original file in truncation mode to clear its contents
-    file.close(); // Close the current file stream
-    file.open(filename, std::ios::trunc); // Open the file with truncation mode
-
-    if (!file) {
-        throw std::runtime_error("Unable to open file in truncation mode");
-    }
-
-    std::cout << "Original file " << filename << " cleared." << std::endl;
-
-    // Close the file after truncation to ensure it is cleared
+    // Close the file
     file.close();
 }
